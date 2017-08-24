@@ -18,6 +18,7 @@ public class DataRetriever extends AsyncTask<Void, Void, Void> {
 
     private String data_path;
     private String json;
+    public AsyncParent parent;
 
     private String TAG = "DateRetriever";
 
@@ -25,8 +26,9 @@ public class DataRetriever extends AsyncTask<Void, Void, Void> {
     public DataRetriever(){}
 
     //take in data path as an argument
-    public DataRetriever(String path){
+    public DataRetriever(String path, AsyncParent p){
         this.data_path = path;
+        parent = p;
         json = "";
     }
 
@@ -66,8 +68,18 @@ public class DataRetriever extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
+    protected void onPreExecute() {
+    }
+
+    @Override
     protected Void doInBackground(Void... voids) {
         retrieveData();
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void v){
+        parent.processResults(getJson());
+        //return null;
     }
 }
