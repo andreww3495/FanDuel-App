@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,5 +33,9 @@ public class MainActivity extends Activity implements AsyncParent{
         String name = js.getSingleAttribute(js.retrivePlayer(0), "first_name");
         String fppg = js.getSingleAttribute(js.retrivePlayer(0), "fppg");
         tv.setText(name + " : " + fppg);
+
+        ImageView image_view = (ImageView)findViewById(R.id.testimage);
+        ImageLoader image_loader = new ImageLoader(this);
+        image_loader.loadIntoView(image_view, "https://d17odppiik753x.cloudfront.net/playerimages/nba/15860.png");
     }
 }

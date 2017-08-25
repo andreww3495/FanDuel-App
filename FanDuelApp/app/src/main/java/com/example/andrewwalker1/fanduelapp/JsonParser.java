@@ -20,6 +20,7 @@ public class JsonParser {
         try {
             object = new JSONObject(data);
             players = object.getJSONArray("players");
+
         } catch(Exception e){
 
         }
