@@ -51,4 +51,18 @@ public class JsonParser {
         return null;
     }
 
+    public String retrieveUrl(JSONObject player){
+        String url = "";
+        try {
+            JSONObject image = player.getJSONObject("images");
+            JSONObject default_image = image.getJSONObject("default");
+            url = default_image.getString("url");
+        } catch(Exception e){
+
+        }
+        return url;
+
+    }
+
+
 }
