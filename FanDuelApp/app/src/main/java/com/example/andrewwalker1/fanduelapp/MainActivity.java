@@ -2,6 +2,7 @@ package com.example.andrewwalker1.fanduelapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -31,6 +32,7 @@ public class MainActivity extends Activity implements AsyncParent{
     @Override
     public void processResults(String results){
         game.setJsonString(results);
+        Log.d("Tag", results);
 
         nextTurn();
 
@@ -38,10 +40,10 @@ public class MainActivity extends Activity implements AsyncParent{
 
 
     public void afterTurn(){
-
+        TextView label = new TextView(this);
+        Button button = new Button(this);
         if(game.getScore() < 10) {
-            TextView label = new TextView(this);
-            Button button = new Button(this);
+
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -51,37 +53,40 @@ public class MainActivity extends Activity implements AsyncParent{
             });
 
             button.setText("Next Turn");
+        } else{
 
-                label.setText(game.generateMessage());
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    game.newGame();
+                    nextTurn();
+                }
+            });
 
-
-            LinearLayout ll = (LinearLayout) findViewById(R.id.activity_main);
-            ll.addView(label);
-            ll.addView(button);
+            button.setText("New Game?");
         }
+
+        label.setText(game.generateMessage());
+        LinearLayout ll = (LinearLayout) findViewById(R.id.activity_main);
+        ll.addView(label);
+        ll.addView(button);
     }
 
     //set up the next turn
     public void nextTurn(){
-        game.resetCurrentPlayers();
         score = new TextView(this);
         score.setText("Correct Guesses: " + game.getScore());
 
-        Player p = game.createPlayer();
-        Player p2 = game.createPlayer();
-
-        LinearLayout rl = (LinearLayout) findViewById(R.id.activity_main);
-
-
-        ImageLoader il = new ImageLoader(this);
-        il.loadIntoView(p.getImage(), p.getImageUrl());
-        il.loadIntoView(p2.getImage(), p2.getImageUrl());
+        game.nextTurn();
+        LinearLayout ll = (LinearLayout) findViewById(R.id.activity_main);
 
         //set up layout
-        rl.removeAllViews();
-        rl.addView(score);
-        rl.addView(p.getImage());
-        rl.addView(p2.getImage());
+        ll.removeAllViews();
+        ll.addView(score);
+
+        for(int i=0;i<game.getCurrentPlayers().size();i++){
+            ll.addView(game.getCurrentPlayers().get(i).getLayout());
+        }
     }
 
 

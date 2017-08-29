@@ -1,5 +1,7 @@
 package com.example.andrewwalker1.fanduelapp;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,7 +24,7 @@ public class JsonParser {
             players = object.getJSONArray("players");
 
         } catch(Exception e){
-
+            Log.e("ERROR", e.getMessage());
         }
     }
 
@@ -36,7 +38,7 @@ public class JsonParser {
             JSONObject player = players.getJSONObject(location);
             return player;
         } catch (Exception e){
-
+            Log.e("ERROR", e.getMessage());
         }
         return null;
     }
@@ -46,11 +48,12 @@ public class JsonParser {
         try {
             return player.getString(attribute);
         } catch(Exception e){
-
+            Log.e("ERROR", e.getMessage());
         }
         return null;
     }
 
+    //retrieve the image url from the given object
     public String retrieveUrl(JSONObject player){
         String url = "";
         try {
@@ -58,7 +61,7 @@ public class JsonParser {
             JSONObject default_image = image.getJSONObject("default");
             url = default_image.getString("url");
         } catch(Exception e){
-
+            Log.e("ERROR", e.getMessage());
         }
         return url;
 

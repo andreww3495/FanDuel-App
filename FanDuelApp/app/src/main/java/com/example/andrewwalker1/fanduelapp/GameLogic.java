@@ -10,6 +10,8 @@ import java.util.Random;
 
 /**
  * Created by andrewwalker1 on 25/08/2017.
+ *
+ * handles the main logic of the game, such as setting up turns, evaluating selections and tracking score
  */
 
 public class GameLogic {
@@ -20,14 +22,17 @@ public class GameLogic {
     private MainActivity main;
     private JsonParser json_parser;
     private String json_string;
+    private ImageLoader il;
 
     private int score = 0;
+    private int player_quantity = 2;
 
     private ArrayList<Player> currentGame;
 
     private Player selected;
 
     public GameLogic(String player_array, MainActivity ma){
+
         this.json_string = player_array;
         this.main = ma;
 
@@ -41,10 +46,10 @@ public class GameLogic {
     }
 
     public GameLogic(MainActivity ma){
+
         this.main = ma;
         random = new Random();
-
-
+        il = new ImageLoader(this.main);
     }
 
     public void setJsonString(String json){
@@ -82,7 +87,6 @@ public class GameLogic {
         for(int i =0;i<currentGame.size();i++){
             if(selected.getFppg() < currentGame.get(i).getFppg() && !(selected.getId().equals(currentGame.get(i).getId()))){
                 //incorrect guess
-                Log.d("Player Turn", "incorrect");
                 correct = false;
                 break;
             }
@@ -105,10 +109,11 @@ public class GameLogic {
         this.selected = null;
     }
 
+    //generate a random player
     public Player createPlayer(){
         JSONObject player_json = selectRandomPlayer(players);
 
-        String name = json_parser.getSingleAttribute(player_json, "first_name");
+        String name = json_parser.getSingleAttribute(player_json, "first_name") + " " + json_parser.getSingleAttribute(player_json, "last_name");
         String id = json_parser.getSingleAttribute(player_json, "id");
         String url = json_parser.retrieveUrl(player_json);
         String fppg = json_parser.getSingleAttribute(player_json, "fppg");
@@ -122,10 +127,10 @@ public class GameLogic {
         }
 
         Player player = new Player(main, this, name, url, id, fp);
-        currentGame.add(player);
         return player;
     }
 
+    //return current score
     public int getScore(){
         return score;
     }
@@ -159,6 +164,46 @@ public class GameLogic {
         }
 
         return sb.toString();
+    }
+
+    //set up next turn
+    public void nextTurn(){
+        resetCurrentPlayers();
+
+        //create required number of new players
+        for(int i=0;i<player_quantity;i++){
+
+            //ensure that a player cannot be selected more than once
+            Boolean in_use = true;
+            while(in_use){
+                in_use = false;
+                Player p = createPlayer();
+
+                //check to see if the created player is already in use
+                for(int j=0;j<currentGame.size();j++){
+                    if(currentGame.get(j).getId().equals(p.getId())){
+                        in_use = true;
+                        break;
+                    }
+                }
+
+                //player is not currently in use
+                if(!in_use){
+                    currentGame.add(p);
+                    il.loadIntoView(p.getImage(), p.getImageUrl());
+                }
+            }
+        }
+    }
+
+    //start a new game
+    public void newGame(){
+        this.score = 0;
+        resetCurrentPlayers();
+    }
+
+    public ArrayList<Player> getCurrentPlayers(){
+        return  this.currentGame;
     }
 
     public void resetCurrentPlayers(){

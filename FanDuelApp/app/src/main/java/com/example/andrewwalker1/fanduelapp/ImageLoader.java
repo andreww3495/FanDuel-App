@@ -23,7 +23,7 @@ public class ImageLoader {
         this.main = activity;
     }
 
-
+    //load the image from the given url into the given image view
     public void loadIntoView(ImageView image_view, String image_path){
         Picasso.with(main)
                 .load(image_path)

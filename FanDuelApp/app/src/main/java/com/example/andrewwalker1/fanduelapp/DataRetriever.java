@@ -80,6 +80,5 @@ public class DataRetriever extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void v){
         parent.processResults(getJson());
-        //return null;
     }
 }

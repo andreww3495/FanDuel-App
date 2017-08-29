@@ -1,11 +1,10 @@
 package com.example.andrewwalker1.fanduelapp;
 
 import android.app.Activity;
-import android.nfc.Tag;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * Created by andrewwalker1 on 27/08/2017.
@@ -15,6 +14,8 @@ public class Player {
 
     private ImageView image;
     private Activity main;
+    private LinearLayout layout;
+    private TextView name_label;
 
     private GameLogic game;
 
@@ -29,22 +30,28 @@ public class Player {
         this.game = gl;
         this.main = activity;
         image = new ImageView(main);
+        layout = new LinearLayout(main);
+        name_label = new TextView(main);
+
 
         this.player_name = name;
         this.image_url = url;
         this.player_id = id;
+
+        name_label.setText(this.player_name);
 
         this.fppg = fp;
 
         image.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                //Toast.makeText(main, "Name = " + player_name + " fppg = " + getFppg(), Toast.LENGTH_SHORT).show();
-                Log.d("PLayer", "Name = " + player_name + " fppg = " + getFppg());
                 playerSelected();
 
             }
         });
+
+        layout.addView(image);
+        layout.addView(name_label);
     }
 
     public ImageView getImage(){
@@ -73,6 +80,10 @@ public class Player {
 
     public void removeListeners(){
         this.image.setOnClickListener(null);
+    }
+
+    public LinearLayout getLayout(){
+        return layout;
     }
 
 }
